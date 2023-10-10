@@ -1,0 +1,17 @@
+
+
+.Login {
+  background: #00000027;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .Login__box {
+  padding: 30px;
+  width: 500px;
+  height: 250px;
+  background: #fff;
+  border: 1px solid #888;
+  border-radius: 30px;
+}
+}

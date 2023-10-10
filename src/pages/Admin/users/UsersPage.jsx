@@ -7,6 +7,7 @@ import {
   Form,
   DatePicker,
   Select,
+  Button,
 } from "antd";
 import { Fragment, useState } from "react";
 import {
@@ -73,9 +74,9 @@ const UsersPage = () => {
       key: "action",
       render: (_, row) => (
         <Space size="middle">
-          <button onClick={() => edituser(row._id)} className="edit-btn">
-            <EditFilled />
-          </button>
+          <Button>
+            experiences
+          </Button>
           <button
             onClick={async () => {
               await deleteUser(row._id);
@@ -127,17 +128,17 @@ const UsersPage = () => {
     }
   }
 
-   const prefixSelector = (
-     <Form.Item name="prefix" noStyle>
-       <Select
-         style={{
-           width: 100,
-         }}
-       >
-         <Option value="+998">+998</Option>
-       </Select>
-     </Form.Item>
-   );
+  const prefixSelector = (
+    <Form.Item name="prefix" noStyle>
+      <Select
+        style={{
+          width: 100,
+        }}
+      >
+        <Option value="+998">+998</Option>
+      </Select>
+    </Form.Item>
+  );
 
   return (
     <Fragment>
@@ -204,7 +205,7 @@ const UsersPage = () => {
             <Input />
           </Form.Item>
           <Form.Item
-            name="phone"
+            name="phoneNumber"
             label="Phone Number"
             rules={[
               {
@@ -228,15 +229,15 @@ const UsersPage = () => {
           >
             <DatePicker />
           </Form.Item>
-          {selected ? null : (
-            <Form.Item
-              label="Password"
-              name="password"
-              rules={[{ required: true, message: "Please Fill" }]}
-            >
-              <Input />
-            </Form.Item>
-          )}
+
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[{ required: true, message: "Please Fill" }]}
+          >
+            <Input />
+          </Form.Item>
+
           {/* <Upload>
             <Button icon={<UploadOutlined />}>Click to Upload Photo</Button>
           </Upload> */}

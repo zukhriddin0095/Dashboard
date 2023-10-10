@@ -24,7 +24,6 @@ function App() {
           <Route path="/" element={<AdminLayout />}>
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="skills" element={<SkillsPage />} />
-            <Route path="experiences" element={<ExperiencesPage />} />
             <Route path="experiences/:IdEx" element={<ExperiencesPage />} />
             <Route path="portfolio" element={<PortfolioPage />} />
             <Route path="users" element={<UsersPage />} />

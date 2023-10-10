@@ -4,7 +4,6 @@ import {
   MenuUnfoldOutlined,
   UserOutlined,
   CodepenCircleOutlined,
-  GithubOutlined,
   LogoutOutlined,
   LinkedinOutlined,
   UserSwitchOutlined,
@@ -58,11 +57,6 @@ const AdminLayout = () => {
                 key: "/skills",
                 icon: <CodepenCircleOutlined />,
                 label: <Link to="/skills">Skills</Link>,
-              },
-              {
-                key: "/experiences",
-                icon: <GithubOutlined />,
-                label: <Link to="/experiences">Experiences</Link>,
               },
               {
                 key: "/portfolio",

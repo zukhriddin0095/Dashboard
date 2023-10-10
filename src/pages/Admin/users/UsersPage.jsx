@@ -10,32 +10,29 @@ import {
   Button,
 } from "antd";
 import { Fragment, useState } from "react";
-import {
-  EditFilled,
-  DeleteFilled,
-  AppstoreAddOutlined,
-} from "@ant-design/icons";
+import { DeleteFilled, AppstoreAddOutlined } from "@ant-design/icons";
 import {
   useAddUserMutation,
   useDeleteUserMutation,
-  useGetUserMutation,
   useGetUsersQuery,
-  useUpdateUserMutation,
 } from "../../../redux-tookit/services/UsersService";
 import { Option } from "antd/es/mentions";
+import { useNavigate } from "react-router-dom";
 
 const UsersPage = () => {
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selected, setSelected] = useState(null);
   const [page, setPage] = useState(0);
 
   const { data, isFetching, refetch } = useGetUsersQuery(page);
 
-  const [getUser] = useGetUserMutation();
   const [addUser] = useAddUserMutation();
-  const [updateUser] = useUpdateUserMutation();
   const [deleteUser] = useDeleteUserMutation();
+  const navigate = useNavigate();
+
+  const navigat = (e) => {
+    navigate(`/experiences/${e}`);
+  };
 
   const columns = [
     {
@@ -74,9 +71,7 @@ const UsersPage = () => {
       key: "action",
       render: (_, row) => (
         <Space size="middle">
-          <Button>
-            experiences
-          </Button>
+          <Button onClick={() => navigat(row._id)}>experiences</Button>
           <button
             onClick={async () => {
               await deleteUser(row._id);
@@ -100,11 +95,7 @@ const UsersPage = () => {
     try {
       let values = await form.validateFields();
       values.photo = "645d162ebb5def00143c21da";
-      if (selected === null) {
-        await addUser(values);
-      } else {
-        await updateUser({ id: selected, body: values });
-      }
+      await addUser(values);
       closeModal();
       refetch();
     } catch (err) {
@@ -115,18 +106,6 @@ const UsersPage = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
-  async function edituser(id) {
-    try {
-      setSelected(id);
-      setIsModalOpen(true);
-      const { data } = await getUser(id);
-      console.log(data);
-      form.setFieldsValue(data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   const prefixSelector = (
     <Form.Item name="prefix" noStyle>
@@ -164,7 +143,7 @@ const UsersPage = () => {
         onChange={(page) => setPage(page)}
       />
       <Modal
-        title={selected ? "Save Portfolio" : "Add portfolio"}
+        title= "Add portfolio"
         open={isModalOpen}
         onOk={handleOk}
         onCancel={closeModal}

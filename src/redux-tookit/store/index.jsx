@@ -2,8 +2,8 @@ import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import PropTypes from "prop-types";
 
-import skillReducer from "../slices/SkillSlice";
 import authReducer from "../slices/authSlice";
+import skillReducer from "../slices/SkillSlice";
 import portfolioReducer, {
   portfolioService,
 } from "../services/PortfolioService";

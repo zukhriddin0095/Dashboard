@@ -17,7 +17,7 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { TOKEN } from "../../../constants";
 import { useDispatch } from "react-redux";
-import { controlAuthenticated } from "../../../redux-tookit/slices/AuthSlice";
+import { controlAuthenticated } from "../../../redux-tookit/slices/authSlice";
 const AdminLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();

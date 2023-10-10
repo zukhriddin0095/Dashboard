@@ -6,7 +6,6 @@ import {
   Pagination,
   Form,
   DatePicker,
-  InputNumber,
   Select,
 } from "antd";
 import { Fragment, useState } from "react";

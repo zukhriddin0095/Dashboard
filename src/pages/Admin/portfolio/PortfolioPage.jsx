@@ -58,7 +58,7 @@ const PortfolioPage = () => {
       key: "action",
       render: (_, row) => (
         <Space size="middle">
-          <button className="edit-btn" onClick={() => editPortfolio(row._id)}>
+          <button className="edit-btn" onClick={ () => editPortfolio(row._id)}>
             <EditFilled />
           </button>
           <button

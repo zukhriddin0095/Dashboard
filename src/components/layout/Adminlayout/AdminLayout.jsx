@@ -20,15 +20,15 @@ import { controlAuthenticated } from "../../../redux-tookit/slices/authSlice";
 const AdminLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const logout = () => {
-    Cookies.remove(TOKEN)
-     dispatch(controlAuthenticated(false))
-     navigate("/")
-  }
-
+    Cookies.remove(TOKEN);
+    dispatch(controlAuthenticated(false));
+    navigate("/");
+  };
+  
   const {
     token: { colorBgContainer },
   } = theme.useToken();

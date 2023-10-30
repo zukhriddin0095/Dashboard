@@ -29,6 +29,13 @@ export const usersService = createApi({
         body,
       }),
     }),
+    updateUser: builder.mutation({
+      query: ({id, body}) => ({
+        url: `users/${id}`,
+        method: "PUT",
+        body,
+      }),
+    }),
     deleteUser: builder.mutation({
       query: (id) => ({
         url: `users/${id}`,
@@ -37,6 +44,8 @@ export const usersService = createApi({
     }),
   }),
 });
+
+
 
 export const {
   useGetUsersQuery,

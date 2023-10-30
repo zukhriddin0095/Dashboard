@@ -5,29 +5,42 @@ import {
   Modal,
   Pagination,
   Form,
-  DatePicker,
-  Select,
   Button,
+  message,
+  Upload,
+  Image,
 } from "antd";
 import { Fragment, useState } from "react";
-import { DeleteFilled, AppstoreAddOutlined } from "@ant-design/icons";
+import {
+  DeleteFilled,
+  EditFilled,
+  AppstoreAddOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import {
   useAddUserMutation,
+  useUpdateUserMutation,
   useDeleteUserMutation,
   useGetUsersQuery,
+  useGetUserMutation,
 } from "../../../redux-tookit/services/UsersService";
-import { Option } from "antd/es/mentions";
 import { useNavigate } from "react-router-dom";
+import { ENDPOINT } from "../../../constants";
+import { request } from "../../../server";
 
 const UsersPage = () => {
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [page, setPage] = useState(0);
+  const [selected, setSelected] = useState(null);
+  const [photo, setPhoto] = useState(null);
 
   const { data, isFetching, refetch } = useGetUsersQuery(page);
 
   const [addUser] = useAddUserMutation();
+  const [getUser] = useGetUserMutation();
   const [deleteUser] = useDeleteUserMutation();
+  const [updateUser] = useUpdateUserMutation();
   const navigate = useNavigate();
 
   const navigat = (e) => {
@@ -67,11 +80,33 @@ const UsersPage = () => {
       key: "phoneNumber",
     },
     {
+      title: "Image",
+      dataIndex: "photo",
+      key: "photo",
+      render: (photo) => {
+        console.log(photo);
+        return (
+          <Image
+            style={{ borderRadius: "50%" }}
+            height={50}
+            src={
+              photo
+                ? `${ENDPOINT}upload/${photo}.png`
+                : "https://variety.com/wp-content/uploads/2021/04/Avatar.jpg"
+            }
+          />
+        );
+      },
+    },
+    {
       title: "Action",
       key: "action",
       render: (_, row) => (
         <Space size="middle">
           <Button onClick={() => navigat(row._id)}>experiences</Button>
+          <button onClick={() => editUser(row._id)} className="edit-btn">
+            <EditFilled />
+          </button>
           <button
             onClick={async () => {
               await deleteUser(row._id);
@@ -86,39 +121,58 @@ const UsersPage = () => {
     },
   ];
 
-  const openModal = () => {
-    setIsModalOpen(true);
-    form.resetFields();
-  };
-
-  const handleOk = async () => {
+  const uploadImage = async (e) => {
     try {
-      let values = await form.validateFields();
-      values.photo = "645d162ebb5def00143c21da";
-      await addUser(values);
-      closeModal();
-      refetch();
+      let form = new FormData();
+      form.append("file", e.file.originFileObj);
+      console.log(form);
+      let { data } = await request.post("upload", form);
+      setPhoto(data);
     } catch (err) {
       console.log(err);
     }
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const openModal = () => {
+    setSelected(null);
+    setIsModalOpen(true);
+    form.resetFields();
   };
 
-  const prefixSelector = (
-    <Form.Item name="prefix" noStyle>
-      <Select
-        style={{
-          width: 100,
-        }}
-      >
-        <Option value="+998">+998</Option>
-      </Select>
-    </Form.Item>
-  );
+  console.log(photo);
 
+  const handleOk = async () => {
+      try {
+        let values = await form.validateFields();
+        let User = { ...values, photo};
+        if (selected === null) {
+          await addUser(User);
+          console.log(User);
+        } else {
+          await updateUser({ id: selected, body: User });
+        }
+        closeModal();
+        refetch();
+      } catch (err) {
+        console.log(err);
+      }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    refetch();
+  };
+
+  async function editUser(id) {
+    try {
+      setSelected(id);
+      setIsModalOpen(true);
+      const { data } = await getUser(id);
+      form.setFieldsValue(data);
+    } catch (error) {
+      message.error(error);
+    }
+  }
   return (
     <Fragment>
       <Table
@@ -143,7 +197,7 @@ const UsersPage = () => {
         onChange={(page) => setPage(page)}
       />
       <Modal
-        title= "Add portfolio"
+        title="Add portfolio"
         open={isModalOpen}
         onOk={handleOk}
         onCancel={closeModal}
@@ -184,8 +238,8 @@ const UsersPage = () => {
             <Input />
           </Form.Item>
           <Form.Item
-            name="phoneNumber"
             label="Phone Number"
+            name="phoneNumber"
             rules={[
               {
                 required: true,
@@ -194,32 +248,55 @@ const UsersPage = () => {
             ]}
           >
             <Input
-              addonBefore={prefixSelector}
+              placeholder="+998"
               style={{
                 width: "100%",
               }}
             />
           </Form.Item>
-
           <Form.Item
             label="Birthday"
             name="birthday"
             rules={[{ required: true, message: "Please Fill" }]}
           >
-            <DatePicker />
-          </Form.Item>
-
-          <Form.Item
-            label="Password"
-            name="password"
-            rules={[{ required: true, message: "Please Fill" }]}
-          >
             <Input />
           </Form.Item>
+          {selected ? null : (
+            <div>
+              <Form.Item
+                label="Password"
+                name="password"
+                rules={[{ required: true, message: "Please Fill" }]}
+              >
+                <Input />
+              </Form.Item>{" "}
+            </div>
+          )}
 
-          {/* <Upload>
+          <Upload
+            onChange={uploadImage}
+            listType="picture"
+            maxCount={1}
+            fileList={
+              photo
+                ? [
+                    {
+                      thumbUrl: `${ENDPOINT}upload/${photo._id}.${
+                        photo.name.split(".")[1]
+                      }`,
+                      name: `${ENDPOINT}upload/${photo._id}.${
+                        photo.name.split(".")[1]
+                      }`,
+                      url: `${ENDPOINT}upload/${photo._id}.${
+                        photo.name.split(".")[1]
+                      }`,
+                    },
+                  ]
+                : []
+            }
+          >
             <Button icon={<UploadOutlined />}>Click to Upload Photo</Button>
-          </Upload> */}
+          </Upload>
         </Form>
       </Modal>
     </Fragment>
